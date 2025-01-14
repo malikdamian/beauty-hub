@@ -1,6 +1,15 @@
 from django.db import models
 
 
+class TimeStampMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ("-modified_at", "-created_at")
+
+
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
@@ -8,7 +17,7 @@ class Category(models.Model):
         return f"Category: {self.name}"
 
 
-class Service(models.Model):
+class Service(TimeStampMixin):
     category = models.OneToOneField(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
